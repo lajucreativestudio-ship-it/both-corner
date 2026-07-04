@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 1. Users
-        User::factory()->create([
+        User::create([
             'name' => 'Laju Studio',
             'email' => 'lajucreativestudio@gmail.com',
             'password' => bcrypt('password123'),
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             'role_id' => $userRole->id,
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Developer Pengelola',
             'email' => 'developer@bothcorner.com',
             'password' => bcrypt('password123'),
