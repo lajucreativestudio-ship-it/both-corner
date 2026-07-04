@@ -625,11 +625,57 @@
     // Page Load initialization
     document.addEventListener('DOMContentLoaded', () => {
       renderEvents(mockEvents);
+      refreshTicketNotifications();
+      setInterval(refreshTicketNotifications, 60000);
     });
 
     // CS Support chat toggle
     let isCsWidgetOpen = false;
     let myTickets = [];
+    const currentUserId = {{ auth()->id() }};
+
+    function getTicketLatestMessage(ticket) {
+      if (!ticket.messages || ticket.messages.length === 0) return null;
+      return ticket.messages[ticket.messages.length - 1];
+    }
+
+    function getTicketReadKey(ticketId) {
+      return `bothcorner:ticket:${ticketId}:last-read-message`;
+    }
+
+    function isTicketUnread(ticket) {
+      const latestMessage = getTicketLatestMessage(ticket);
+      if (!latestMessage || latestMessage.sender_id === currentUserId) return false;
+
+      const lastReadMessageId = localStorage.getItem(getTicketReadKey(ticket.id));
+      return String(latestMessage.id) !== lastReadMessageId;
+    }
+
+    function getUnreadTicketCount(tickets = myTickets) {
+      return tickets.filter(isTicketUnread).length;
+    }
+
+    function updateTicketBadges(tickets = myTickets) {
+      const count = getUnreadTicketCount(tickets);
+      const floatingBadge = document.getElementById('cs-unread-badge');
+      const tabBadge = document.getElementById('cs-tab-unread-badge');
+
+      [floatingBadge, tabBadge].forEach((badge) => {
+        if (!badge) return;
+        badge.innerText = count > 9 ? '9+' : count;
+        badge.classList.toggle('hidden', count === 0);
+      });
+    }
+
+    function refreshTicketNotifications() {
+      fetch('/client/tickets')
+        .then(res => res.json())
+        .then(data => {
+          myTickets = data;
+          updateTicketBadges(data);
+        })
+        .catch(() => {});
+    }
 
     function toggleCsWidget() {
       const windowEl = document.getElementById('cs-chat-window');
@@ -671,6 +717,7 @@
         .then(res => res.json())
         .then(data => {
           myTickets = data;
+          updateTicketBadges(data);
           const container = document.getElementById('cs-body-list');
           if (data.length === 0) {
             container.innerHTML = `
@@ -685,14 +732,18 @@
             let badgeClass = 'bg-amber-50 text-amber-600 border border-amber-100';
             if (t.status === 'on_going') badgeClass = 'bg-indigo-50 text-indigo-600 border border-indigo-100';
             if (t.status === 'closed') badgeClass = 'bg-emerald-50 text-emerald-600 border border-emerald-100';
+            const latestMessage = getTicketLatestMessage(t);
+            const unread = isTicketUnread(t);
 
             return `
-              <div onclick="openClientChatDetail(${t.id})" class="p-3 bg-white hover:bg-slate-50/70 border border-slate-200/75 rounded-xl cursor-pointer transition-colors shadow-sm text-xs">
+              <div onclick="openClientChatDetail(${t.id})" class="relative p-3 bg-white hover:bg-slate-50/70 border ${unread ? 'border-red-200 ring-2 ring-red-50' : 'border-slate-200/75'} rounded-xl cursor-pointer transition-colors shadow-sm text-xs">
+                ${unread ? '<span class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white shadow-sm"></span>' : ''}
                 <div class="flex items-center justify-between mb-1">
                   <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase ${badgeClass}">${t.status.replace('_', ' ')}</span>
                   <span class="text-[9px] text-slate-400">${new Date(t.created_at).toLocaleDateString()}</span>
                 </div>
-                <h4 class="font-bold text-slate-800 leading-tight truncate">${t.subject}</h4>
+                <h4 class="font-bold ${unread ? 'text-slate-950' : 'text-slate-800'} leading-tight truncate">${t.subject}</h4>
+                ${latestMessage ? `<p class="mt-1 text-[10px] ${unread ? 'text-red-500 font-bold' : 'text-slate-400'} truncate">${unread ? 'Pesan baru: ' : ''}${latestMessage.message}</p>` : ''}
               </div>
             `;
           }).join('');
@@ -704,6 +755,11 @@
       if (!ticket) return;
 
       document.getElementById('active-ticket-id').value = ticketId;
+      const latestMessage = getTicketLatestMessage(ticket);
+      if (latestMessage) {
+        localStorage.setItem(getTicketReadKey(ticketId), String(latestMessage.id));
+        updateTicketBadges();
+      }
       switchCsTab('chat');
 
       renderChatFeed(ticket.messages);
@@ -770,6 +826,7 @@
             .then(res => res.json())
             .then(tickets => {
               myTickets = tickets;
+              updateTicketBadges(tickets);
               const updatedTicket = tickets.find(t => t.id == ticketId);
               if (updatedTicket) {
                 renderChatFeed(updatedTicket.messages);
@@ -783,8 +840,9 @@
   <!-- Floating CS Chat Support Widget -->
   <div class="fixed bottom-6 right-6 z-50">
     <!-- Floating Button -->
-    <button onclick="toggleCsWidget()" class="w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-750 text-white flex items-center justify-center shadow-xl shadow-indigo-600/35 hover:scale-105 active:scale-95 transition-all cursor-pointer">
+    <button onclick="toggleCsWidget()" class="relative w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-750 text-white flex items-center justify-center shadow-xl shadow-indigo-600/35 hover:scale-105 active:scale-95 transition-all cursor-pointer">
       <span class="text-2xl">🎧</span>
+      <span id="cs-unread-badge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 border-2 border-white text-[10px] font-extrabold leading-4 text-white shadow-lg">0</span>
     </button>
 
     <!-- Chat Popover Window -->
@@ -806,7 +864,10 @@
         
         <!-- Tab Navigations -->
         <div class="flex border-b border-slate-100 text-[10px] font-bold text-slate-500 bg-slate-50">
-          <button id="tab-ticket-list" onclick="switchCsTab('list')" class="flex-grow py-2.5 text-center border-b-2 border-indigo-600 text-indigo-600 cursor-pointer">Tiket Saya</button>
+          <button id="tab-ticket-list" onclick="switchCsTab('list')" class="relative flex-grow py-2.5 text-center border-b-2 border-indigo-600 text-indigo-600 cursor-pointer">
+            Tiket Saya
+            <span id="cs-tab-unread-badge" class="hidden ml-1 inline-flex min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-extrabold items-center justify-center align-middle">0</span>
+          </button>
           <button id="tab-ticket-create" onclick="switchCsTab('create')" class="flex-grow py-2.5 text-center border-b-2 border-transparent cursor-pointer">Buat Konsultasi Baru</button>
         </div>
 
