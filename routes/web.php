@@ -8,6 +8,7 @@ use App\Http\Controllers\DeveloperController;
 use App\Models\NavigationMenu;
 use App\Models\PricingPlan;
 use App\Models\Article;
+use App\Models\ClientDevice;
 
 Route::get('/', function () {
     $menus = NavigationMenu::where('type', 'landing_page')->orderBy('order')->get();
@@ -49,7 +50,22 @@ Route::post('/login', function (Request $request) {
 Route::get('/dashboard', function () {
     $menus = NavigationMenu::where('type', 'user_dashboard')->orderBy('order')->get();
     $plans = PricingPlan::all();
-    return view('dashboard', compact('menus', 'plans'));
+    $devices = ClientDevice::where('user_id', Auth::id())
+        ->orWhereNull('user_id')
+        ->latest('last_active_at')
+        ->get();
+
+    $license = [
+        'plan' => 'Online Starter Plan Internal',
+        'status' => 'Aktif',
+        'license_key' => 'BC-LS-2026-STARTER-001',
+        'device_limit' => 3,
+        'active_devices' => $devices->where('is_online', true)->count(),
+        'registered_devices' => $devices->count(),
+        'renewal_date' => now()->addMonth()->format('d M Y'),
+    ];
+
+    return view('dashboard', compact('menus', 'plans', 'devices', 'license'));
 })->name('dashboard')->middleware('auth');
 
 Route::post('/logout', function (Request $request) {

@@ -18,6 +18,11 @@ class ClientDevice extends Model
         'last_active_at',
     ];
 
+    protected $casts = [
+        'is_online' => 'boolean',
+        'last_active_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

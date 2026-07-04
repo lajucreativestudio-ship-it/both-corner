@@ -55,6 +55,11 @@
               </a>
             </li>
           @endforeach
+          <li class="rounded-xl overflow-hidden" id="menu-licenses">
+            <a href="#" onclick="switchPanel('licenses')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-200 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent">
+              <span class="text-base">🔐</span> Lisensi & Device
+            </a>
+          </li>
         </ul>
       </div>
       
@@ -278,6 +283,104 @@
               <button onclick="showToast('Membuka gerbang pembayaran untuk {{ $plan->name }}...')" class="mt-8 w-full py-2.5 rounded-full text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-lg cursor-pointer {{ $isDark ? 'shadow-indigo-600/25' : 'shadow-indigo-600/15' }}">Pilih Paket</button>
             </div>
           @endforeach
+        </div>
+      </section>
+
+      <!-- Panel Licenses & Devices -->
+      <section id="panel-licenses" class="db-panel p-8 hidden">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Lisensi & Device Aktif</h1>
+          <p class="text-slate-500 text-sm mt-1">Pantau pemakaian lisensi dan perangkat yang sedang terhubung ke akun Both Corner Cloud Anda.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Paket Aktif</p>
+            <h3 class="text-lg font-extrabold text-slate-900 mt-2">{{ $license['plan'] }}</h3>
+            <span class="inline-flex mt-3 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">{{ $license['status'] }}</span>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Device Online</p>
+            <div class="mt-2 flex items-end gap-1">
+              <span class="text-3xl font-extrabold text-slate-900">{{ $license['active_devices'] }}</span>
+              <span class="text-sm font-bold text-slate-400 mb-1">/ {{ $license['device_limit'] }}</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Perangkat aktif saat ini.</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Terdaftar</p>
+            <div class="mt-2 text-3xl font-extrabold text-slate-900">{{ $license['registered_devices'] }}</div>
+            <p class="text-xs text-slate-500 mt-2">Total device yang pernah dipasangkan.</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Perpanjangan</p>
+            <div class="mt-2 text-lg font-extrabold text-slate-900">{{ $license['renewal_date'] }}</div>
+            <p class="text-xs text-slate-500 mt-2">Tanggal estimasi tagihan berikutnya.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">Daftar Device Terhubung</h2>
+              <p class="text-xs text-slate-500 mt-1">Gunakan daftar ini untuk mengecek laptop/tablet mana saja yang sedang memakai lisensi.</p>
+            </div>
+            <div class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-600">
+              {{ $license['license_key'] }}
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                  <th class="px-5 py-3 font-bold">Device</th>
+                  <th class="px-5 py-3 font-bold">Platform</th>
+                  <th class="px-5 py-3 font-bold">Status</th>
+                  <th class="px-5 py-3 font-bold">Kamera</th>
+                  <th class="px-5 py-3 font-bold">Terakhir Aktif</th>
+                  <th class="px-5 py-3 font-bold text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                @forelse($devices as $device)
+                  <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-5 py-4">
+                      <div class="font-bold text-slate-900">{{ $device->device_name }}</div>
+                      <div class="text-xs text-slate-400">ID device: BC-{{ str_pad($device->id, 4, '0', STR_PAD_LEFT) }}</div>
+                    </td>
+                    <td class="px-5 py-4 text-slate-600">{{ $device->platform }}</td>
+                    <td class="px-5 py-4">
+                      @if($device->is_online)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+                        </span>
+                      @else
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500 border border-slate-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Offline
+                        </span>
+                      @endif
+                    </td>
+                    <td class="px-5 py-4">
+                      <span class="text-xs font-bold {{ $device->camera_status === 'Connected' ? 'text-emerald-600' : 'text-red-500' }}">{{ $device->camera_status }}</span>
+                    </td>
+                    <td class="px-5 py-4 text-slate-500">{{ optional($device->last_active_at)->diffForHumans() ?? 'Belum pernah aktif' }}</td>
+                    <td class="px-5 py-4 text-right">
+                      <button onclick="showToast('🔐 Permintaan lepas device {{ $device->device_name }} dikirim ke server.')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-colors">Lepas</button>
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="6" class="px-5 py-12 text-center">
+                      <div class="text-4xl mb-3">🔌</div>
+                      <p class="font-bold text-slate-800">Belum ada device yang terhubung.</p>
+                      <p class="text-xs text-slate-500 mt-1">Login dari aplikasi Windows atau Android client untuk mengaktifkan lisensi device pertama.</p>
+                    </td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
