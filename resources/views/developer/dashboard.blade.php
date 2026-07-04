@@ -24,103 +24,113 @@
 <body class="bg-slate-50 text-slate-800 overflow-x-hidden antialiased flex h-screen">
 
   <!-- Sidebar -->
-  <aside class="w-64 bg-slate-900 text-slate-400 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none">
-    <div>
+  <aside class="w-72 bg-[#0f172a] text-slate-400 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none">
+    <div class="min-h-0 flex flex-col">
       <!-- Brand Logo -->
-      <div class="h-20 px-6 border-b border-slate-800/60 flex items-center gap-3">
+      <div class="h-20 px-6 border-b border-slate-800/70 flex items-center gap-3 shrink-0">
         <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">B</div>
-        <span class="text-base font-extrabold text-white tracking-tight">Both<span class="text-indigo-400">Dev</span></span>
+        <div class="leading-tight">
+          <span class="block text-base font-extrabold text-white tracking-tight">Both<span class="text-indigo-400">Dev</span></span>
+          <span class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Admin Console</span>
+        </div>
       </div>
       
       <!-- Nav Menu list -->
-      <div class="p-4">
-        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider px-4 mb-3">Developer Tools</p>
-        <ul class="space-y-1">
-          <li class="rounded-xl overflow-hidden" id="menu-summary">
-            <a href="#" onclick="switchPanel('summary')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-indigo-500 bg-slate-800/40 text-white transition-all duration-200 cursor-pointer">
-              <span>📊</span> Ringkasan
+      <nav class="p-4 overflow-y-auto">
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] px-3 mb-3">Developer Tools</p>
+        <ul class="space-y-1.5">
+          <li id="menu-summary">
+            <a href="#" data-nav-link onclick="switchPanel('summary')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-white shadow-sm shadow-indigo-950/20 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center">📊</span>
+              <span class="truncate">Ringkasan</span>
             </a>
           </li>
           
           <!-- Dropdown Kelola Konten -->
-          <li class="rounded-xl overflow-hidden">
-            <button type="button" onclick="toggleDropdown('dropdown-content')" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 text-slate-400 transition-all duration-200 cursor-pointer">
-              <span class="flex items-center gap-3">
-                <span>📁</span> Kelola Konten
+          <li>
+            <button type="button" id="parent-dropdown-content" data-nav-parent onclick="toggleDropdown('dropdown-content')" class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent hover:border-slate-700/70 hover:text-white hover:bg-slate-800/50 text-slate-300 transition-all duration-200 cursor-pointer">
+              <span class="flex items-center gap-3 min-w-0">
+                <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">📁</span>
+                <span class="truncate">Kelola Konten</span>
               </span>
-              <span id="chevron-dropdown-content" class="transition-transform duration-250 text-[10px] rotate-180">▲</span>
+              <span id="chevron-dropdown-content" class="transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
             </button>
-            <ul id="dropdown-content" class="bg-slate-950/40 border-l-2 border-slate-800 ml-4 pl-2 space-y-1 my-1 block">
-              <li class="rounded-lg overflow-hidden" id="menu-articles">
-                <a href="#" onclick="switchPanel('articles')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>📰</span> Kelola Artikel
+            <ul id="dropdown-content" data-nav-group class="relative ml-7 mt-1.5 space-y-1 border-l border-slate-700/60 pl-3 block">
+              <li id="menu-articles">
+                <a href="#" data-nav-link onclick="switchPanel('articles')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">📰</span> <span class="truncate">Kelola Artikel</span>
                 </a>
               </li>
-              <li class="rounded-lg overflow-hidden" id="menu-categories">
-                <a href="#" onclick="switchPanel('categories')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>🏷️</span> Kategori Artikel
+              <li id="menu-categories">
+                <a href="#" data-nav-link onclick="switchPanel('categories')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">🏷️</span> <span class="truncate">Kategori Artikel</span>
                 </a>
               </li>
-              <li class="rounded-lg overflow-hidden" id="menu-pages">
-                <a href="#" onclick="switchPanel('pages')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>📄</span> Kelola Halaman Statis
+              <li id="menu-pages">
+                <a href="#" data-nav-link onclick="switchPanel('pages')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">📄</span> <span class="truncate">Kelola Halaman Statis</span>
                 </a>
               </li>
-              <li class="rounded-lg overflow-hidden" id="menu-menus">
-                <a href="#" onclick="switchPanel('menus')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>🔗</span> Kelola Menu Navigasi
+              <li id="menu-menus">
+                <a href="#" data-nav-link onclick="switchPanel('menus')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">🔗</span> <span class="truncate">Kelola Menu Navigasi</span>
                 </a>
               </li>
             </ul>
           </li>
 
-          <li class="rounded-xl overflow-hidden" id="menu-payments">
-            <a href="#" onclick="switchPanel('payments')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-              <span>💳</span> Gateway Pembayaran
+          <li id="menu-payments">
+            <a href="#" data-nav-link onclick="switchPanel('payments')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💳</span>
+              <span class="truncate">Gateway Pembayaran</span>
             </a>
           </li>
 
-          <li class="rounded-xl overflow-hidden" id="menu-revenue">
-            <a href="#" onclick="switchPanel('revenue')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-              <span>📈</span> Pendapatan (Revenue)
+          <li id="menu-revenue">
+            <a href="#" data-nav-link onclick="switchPanel('revenue')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">📈</span>
+              <span class="truncate">Pendapatan</span>
             </a>
           </li>
 
-          <li class="rounded-xl overflow-hidden" id="menu-pricing">
-            <a href="#" onclick="switchPanel('pricing')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-              <span>💰</span> Pengaturan Harga
+          <li id="menu-pricing">
+            <a href="#" data-nav-link onclick="switchPanel('pricing')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💰</span>
+              <span class="truncate">Pengaturan Harga</span>
             </a>
           </li>
 
           <!-- Dropdown Kelola Pengguna & Hak Akses -->
-          <li class="rounded-xl overflow-hidden">
-            <button type="button" onclick="toggleDropdown('dropdown-users')" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 text-slate-400 transition-all duration-200 cursor-pointer">
-              <span class="flex items-center gap-3">
-                <span>👥</span> Kelola Pengguna & Tim
+          <li>
+            <button type="button" id="parent-dropdown-users" data-nav-parent onclick="toggleDropdown('dropdown-users')" class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent hover:border-slate-700/70 hover:text-white hover:bg-slate-800/50 text-slate-300 transition-all duration-200 cursor-pointer">
+              <span class="flex items-center gap-3 min-w-0">
+                <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">👥</span>
+                <span class="truncate">Pengguna & Tim</span>
               </span>
-              <span id="chevron-dropdown-users" class="transition-transform duration-250 text-[10px] rotate-180">▲</span>
+              <span id="chevron-dropdown-users" class="transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
             </button>
-            <ul id="dropdown-users" class="bg-slate-950/40 border-l-2 border-slate-800 ml-4 pl-2 space-y-1 my-1 block">
-              <li class="rounded-lg overflow-hidden" id="menu-users">
-                <a href="#" onclick="switchPanel('users')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>👤</span> Daftar Pengguna / Tim
+            <ul id="dropdown-users" data-nav-group class="relative ml-7 mt-1.5 space-y-1 border-l border-slate-700/60 pl-3 block">
+              <li id="menu-users">
+                <a href="#" data-nav-link onclick="switchPanel('users')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">👤</span> <span class="truncate">Daftar Pengguna / Tim</span>
                 </a>
               </li>
-              <li class="rounded-lg overflow-hidden" id="menu-roles">
-                <a href="#" onclick="switchPanel('roles')" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-                  <span>🔑</span> Peran & Hak Akses
+              <li id="menu-roles">
+                <a href="#" data-nav-link onclick="switchPanel('roles')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
+                  <span class="w-5 text-center">🔑</span> <span class="truncate">Peran & Hak Akses</span>
                 </a>
               </li>
             </ul>
           </li>
 
-          <li class="rounded-xl overflow-hidden" id="menu-chats">
-            <a href="#" onclick="switchPanel('chats')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:text-white hover:bg-slate-850/50 border-l-4 border-transparent transition-all duration-200 cursor-pointer">
-              <span>💬</span> Chat CS & Tiket Bantuan
+          <li id="menu-chats">
+            <a href="#" data-nav-link onclick="switchPanel('chats')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💬</span>
+              <span class="truncate">Chat CS & Tiket</span>
             </a>
           </li>
         </ul>
-      </div>
+      </nav>
     </div>
     
     <!-- Profile footer with popover logout -->
@@ -975,7 +985,7 @@
                   @foreach($roles as $roleRecord)
                     <tr class="hover:bg-slate-50/50">
                       <td class="p-4 whitespace-nowrap">
-                        <span class="font-bold text-slate-850 block">{{ $roleRecord->name }}</span>
+                        <span class="font-bold text-slate-800 block">{{ $roleRecord->name }}</span>
                         @if(in_array($roleRecord->name, ['Admin Utama', 'Team Monitor', 'Client / Member']))
                           <span class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 block">SYSTEM DEFAULT</span>
                         @endif
@@ -1145,32 +1155,37 @@
       }
 
       // Update sidebar active states
-      document.querySelectorAll('aside ul li').forEach(li => {
-        const link = li.querySelector('a');
-        if (link) {
-          li.classList.remove('bg-slate-800/40');
-          link.classList.remove('text-white', 'border-indigo-500');
-          link.classList.add('border-transparent');
-        }
+      document.querySelectorAll('[data-nav-link]').forEach(link => {
+        link.classList.remove('bg-indigo-500/10', 'text-white', 'border-indigo-500/20', 'shadow-sm', 'shadow-indigo-950/20');
+        link.classList.add('border-transparent');
       });
-      document.querySelectorAll('#dropdown-content li').forEach(li => {
-        const link = li.querySelector('a');
-        if (link) {
-          li.classList.remove('bg-slate-850/60');
-          link.classList.remove('text-white', 'border-indigo-500');
-          link.classList.add('border-transparent');
-        }
+      document.querySelectorAll('[data-nav-parent]').forEach(parent => {
+        parent.classList.remove('bg-slate-800/70', 'text-white', 'border-slate-700/80');
+        parent.classList.add('border-transparent', 'text-slate-300');
       });
 
       const activeLi = document.getElementById('menu-' + panelId);
       if (activeLi) {
         const activeLink = activeLi.querySelector('a');
-        activeLink.classList.remove('border-transparent');
-        activeLink.classList.add('text-white', 'border-indigo-500');
-        if (activeLi.closest('#dropdown-content')) {
-          activeLi.classList.add('bg-slate-850/60');
-        } else {
-          activeLi.classList.add('bg-slate-800/40');
+        if (activeLink) {
+          activeLink.classList.remove('border-transparent');
+          activeLink.classList.add('bg-indigo-500/10', 'text-white', 'border-indigo-500/20', 'shadow-sm', 'shadow-indigo-950/20');
+        }
+
+        const activeGroup = activeLi.closest('[data-nav-group]');
+        if (activeGroup) {
+          activeGroup.classList.remove('hidden');
+          activeGroup.classList.add('block');
+
+          const parent = document.getElementById('parent-' + activeGroup.id);
+          const chevron = document.getElementById('chevron-' + activeGroup.id);
+          if (parent) {
+            parent.classList.remove('border-transparent', 'text-slate-300');
+            parent.classList.add('bg-slate-800/70', 'text-white', 'border-slate-700/80');
+          }
+          if (chevron) {
+            chevron.classList.add('rotate-180');
+          }
         }
       }
     }
@@ -1182,11 +1197,11 @@
         if (menu.classList.contains('hidden')) {
           menu.classList.remove('hidden');
           menu.classList.add('block');
-          chevron.classList.add('rotate-180');
+          if (chevron) chevron.classList.add('rotate-180');
         } else {
           menu.classList.remove('block');
           menu.classList.add('hidden');
-          chevron.classList.remove('rotate-180');
+          if (chevron) chevron.classList.remove('rotate-180');
         }
       }
     }
@@ -1310,7 +1325,7 @@
       
       // Remove active background classes from items
       document.querySelectorAll('.ticket-list-item').forEach(el => {
-        el.classList.remove('bg-indigo-50/70', 'border-l-4', 'border-indigo-650');
+        el.classList.remove('bg-indigo-50/70', 'border-l-4', 'border-indigo-600');
       });
 
       // Show selected chat detail
