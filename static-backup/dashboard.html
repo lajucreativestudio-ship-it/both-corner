@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Both Corner Cloud</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="db-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="db-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <div class="logo-icon" style="background: linear-gradient(135deg, #007bff, #7c3aed);">B</div>
+          <div class="logo-text" style="background: #ffffff; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Both<span>Corner</span></div>
+        </a>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item active" id="menu-events">
+          <a href="#" onclick="switchPanel('events')">
+            <span>🏠</span> Events
+          </a>
+        </li>
+        <li class="sidebar-item" id="menu-settings">
+          <a href="#" onclick="switchPanel('settings')">
+            <span>🔧</span> Settings
+          </a>
+        </li>
+        <li class="sidebar-item" id="menu-subscriptions">
+          <a href="#" onclick="switchPanel('subscriptions')">
+            <span>💳</span> Subscriptions
+          </a>
+        </li>
+        <li class="sidebar-item" id="menu-refer-earn">
+          <a href="#" onclick="switchPanel('refer-earn')">
+            <span>💡</span> Refer & Earn
+          </a>
+        </li>
+        <li class="sidebar-item" id="menu-copilot">
+          <a href="#" onclick="switchPanel('copilot')">
+            <span>📷</span> Booth Copilot
+          </a>
+        </li>
+        <li class="sidebar-item" id="menu-help">
+          <a href="#" onclick="switchPanel('help')">
+            <span>❓</span> Help
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="avatar" style="background: #7c3aed;">LS</div>
+          <div class="user-info">
+            <span class="user-name">Laju Studio</span>
+            <span class="user-role">Administrator</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="db-main">
+      
+      <!-- Events (Dashboard Home) Panel -->
+      <section id="panel-events" class="db-panel active">
+        <!-- Notice Banner -->
+        <div class="notice-banner">
+          <div class="notice-icon">📺</div>
+          <div class="notice-text">
+            <strong>Both Corner Cloud akan segera bertransisi ke Dashboard Baru</strong>
+            Kelola event, lakukan remote konfigurasi, dan pilih dari ratusan template profesional secara instan langsung dari browser Anda.
+          </div>
+          <a href="#" class="btn-notice" onclick="showToast('⚡ Fitur Dashboard baru sedang disiapkan!')">Coba Dashboard Baru</a>
+        </div>
+
+        <!-- Events List Header with Search -->
+        <div class="events-header">
+          <h2>Events</h2>
+          <div class="events-search-container">
+            <input type="text" placeholder="Event Name" id="event-search-input" oninput="filterEvents()">
+            <button class="btn-search" onclick="filterEvents()">Search</button>
+          </div>
+        </div>
+
+        <!-- Event Cards Grid -->
+        <div class="events-grid" id="events-grid-container">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </section>
+
+      <!-- Settings Panel -->
+      <section id="panel-settings" class="db-panel">
+        <div class="db-header" style="border-bottom: none; margin-bottom: 1.5rem; padding-bottom: 0;">
+          <div class="db-title">
+            <h1 style="font-size: 1.75rem; color: #0f172a;">Settings</h1>
+          </div>
+          <button class="btn-search" onclick="saveSettings()" style="background-color: var(--brand-primary);">Save Settings</button>
+        </div>
+
+        <div class="settings-form-container">
+          <!-- Row 1: Business Name & Username -->
+          <div class="form-row">
+            <div class="form-col">
+              <label for="settings-business-name">Business Name</label>
+              <input type="text" id="settings-business-name" value="Laju Studio">
+              <span class="input-hint">Shown on your homepage and events.</span>
+            </div>
+            <div class="form-col">
+              <label for="settings-username">Username</label>
+              <input type="text" id="settings-username" value="1354452179">
+              <span class="input-hint">Your Homepage will be at bothcorner.co/u/yourusername (Business Plan)</span>
+            </div>
+          </div>
+
+          <!-- Row 2: Email -->
+          <div class="form-row">
+            <div class="form-col" style="max-width: 50%;">
+              <label for="settings-email">Email</label>
+              <input type="email" id="settings-email" value="lajucreativestudio@gmail.com">
+            </div>
+          </div>
+          <div class="form-links">
+            <a href="#" class="blue-link" onclick="showToast('📧 Instruksi perubahan email dikirim ke email lama.')">Change Email</a>
+            <a href="#" class="blue-link" onclick="showToast('🔑 Silakan cek email untuk instruksi reset password.')">Change Password</a>
+            <a href="#" class="blue-link" style="color: #ef4444;" onclick="showToast('✖ Akun tidak dapat dihapus selama masa aktif paket.', false)">Delete Account</a>
+          </div>
+
+          <!-- Checkbox default guest access -->
+          <div class="form-checkbox-row">
+            <input type="checkbox" id="settings-default-guest-access" checked>
+            <label for="settings-default-guest-access">
+              <strong>Default Guest Access</strong>
+              <span>Allow guests to also see other's images/videos. <a href="#" class="blue-link" style="font-weight: 500;">More Info</a> This sets the default for new events and can be over-ridden per event.</span>
+            </label>
+          </div>
+
+          <!-- Subscription Box -->
+          <div class="settings-sub-box">
+            <h4>Both Corner Cloud Subscription - Upgrade for more brand control</h4>
+            <p>Upgrade to a paid Both Corner plan so you can customize your albums and homepage with your logo, link to your website, password protected events, events homepage, embed events on your site, custom event logo and link, a custom subdomain, and custom google analytics tracking.</p>
+            <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #64748b;">You are currently subscribed to basic plan. Upgrade plan to enable more features.</p>
+            <button class="btn-sub-upgrade" onclick="showToast('💳 Mengarahkan ke gerbang pembayaran...')">Upgrade Subscription</button>
+          </div>
+
+          <!-- Logo upload row -->
+          <div class="logo-upload-row">
+            <div class="logo-upload-card">
+              <label>Light Logo Image</label>
+              <div class="logo-upload-box" onclick="showToast('🔒 Fitur ini memerlukan paket Business.', false)">
+                Upgrade to the Business Plan to enable this feature.
+              </div>
+              <span class="input-hint">Light logo to be used on your homepage and your events pages.</span>
+            </div>
+            <div class="logo-upload-card">
+              <label>Dark Logo Image</label>
+              <div class="logo-upload-box" onclick="showToast('🔒 Fitur ini memerlukan paket Business.', false)">
+                Upgrade to the Business Plan to enable this feature.
+              </div>
+              <span class="input-hint">Dark logo to be used on your homepage and your events pages.</span>
+            </div>
+          </div>
+
+          <!-- Row 3: Website & Custom Domain -->
+          <div class="form-row">
+            <div class="form-col">
+              <label for="settings-website">Your Website</label>
+              <input type="text" id="settings-website" placeholder="http://yoursite.com">
+            </div>
+            <div class="form-col">
+              <label for="settings-custom-domain">Custom Domain</label>
+              <input type="text" id="settings-custom-domain" placeholder="photos.yourdomain.com">
+              <span class="input-hint">Get a custom subdomain for your events and photos such as: yourcompany.bothcorner.co for a more professional look.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Subscriptions Panel -->
+      <section id="panel-subscriptions" class="db-panel">
+        <div class="db-header">
+          <div class="db-title">
+            <h1>Subscriptions & Billing</h1>
+            <p>Kelola detail paket langganan dan tagihan akun Both Corner Cloud Anda.</p>
+          </div>
+        </div>
+        <div class="settings-form-container" style="text-align: center; padding: 4rem 2rem;">
+          <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">💳</span>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #0f172a;">Paket Aktif: Free Basic Plan</h3>
+          <p style="color: #64748b; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem auto;">Anda sedang menggunakan paket dasar gratis. Upgrade untuk membuka opsi kustom branding, domain kustom, cetak tak terbatas, dan analisis penuh.</p>
+          <button class="btn-search" onclick="switchPanel('settings')" style="background-color: var(--brand-primary); padding: 0.65rem 2rem;">Lihat Opsi Upgrade</button>
+        </div>
+      </section>
+
+      <!-- Refer & Earn Panel -->
+      <section id="panel-refer-earn" class="db-panel">
+        <div class="db-header">
+          <div class="db-title">
+            <h1>Refer & Earn</h1>
+            <p>Undang rekan vendor lainnya dan dapatkan bonus saldo cloud.</p>
+          </div>
+        </div>
+        <div class="settings-form-container" style="text-align: center; padding: 4rem 2rem;">
+          <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">🎁</span>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #0f172a;">Bagikan Link Referral Anda</h3>
+          <p style="color: #64748b; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem auto;">Dapatkan gratis 1 bulan paket Business untuk setiap teman yang mendaftar dan berlangganan menggunakan link referral Anda.</p>
+          <div style="display: flex; gap: 0.5rem; justify-content: center; max-width: 400px; margin: 0 auto;">
+            <input type="text" value="https://bothcorner.co/ref/lajustudio" style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem 1rem; flex-grow: 1; text-align: center; font-size: 0.85rem;" readonly id="ref-link-input">
+            <button class="btn-search" onclick="copyRefLink()">Salin</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Booth Copilot Panel -->
+      <section id="panel-copilot" class="db-panel">
+        <div class="db-header">
+          <div class="db-title">
+            <h1>Booth Copilot</h1>
+            <p>Pantau perangkat kamera di lapangan secara real-time dari jarak jauh.</p>
+          </div>
+        </div>
+        <div class="settings-form-container" style="text-align: center; padding: 4rem 2rem;">
+          <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">📱</span>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #0f172a;">Perangkat Kamera Tidak Aktif</h3>
+          <p style="color: #64748b; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem auto;">Gunakan fitur Booth Copilot di aplikasi Android / Windows Anda untuk memantau status baterai, sisa kertas printer, dan jepretan kamera secara jarak jauh.</p>
+        </div>
+      </section>
+
+      <!-- Help Panel -->
+      <section id="panel-help" class="db-panel">
+        <div class="db-header">
+          <div class="db-title">
+            <h1>Bantuan & Dukungan</h1>
+            <p>Temukan panduan penyiapan photobooth dan kontak dukungan teknis.</p>
+          </div>
+        </div>
+        <div class="settings-form-container">
+          <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #0f172a;">Pertanyaan Sering Diajukan (FAQ)</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem;">
+            <li style="border-bottom: 1px solid #e2e8f0; padding-bottom: 0.75rem;">
+              <strong style="display: block; margin-bottom: 0.25rem; color: #1e293b;">Bagaimana cara menyinkronkan event ke aplikasi Android/Windows?</strong>
+              <span style="color: #64748b;">Pastikan perangkat Anda terhubung ke internet, lalu login dengan username <strong>1354452179</strong> atau email Anda di dalam aplikasi Both Corner.</span>
+            </li>
+            <li style="border-bottom: 1px solid #e2e8f0; padding-bottom: 0.75rem;">
+              <strong style="display: block; margin-bottom: 0.25rem; color: #1e293b;">Apakah Both Corner mendukung printer eksternal?</strong>
+              <span style="color: #64748b;">Ya, aplikasi Windows mendukung cetak driver printer lokal secara langsung, sedangkan versi Android mendukung AirPrint atau koneksi print server.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Detail Photo Modal (Used for previewing photos in backup gallery) -->
+  <div class="modal" id="photo-modal">
+    <div class="modal-content">
+      <div class="modal-image-pane">
+        <img src="" alt="Selected Photo" id="modal-image">
+      </div>
+      <div class="modal-details-pane">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-header-info">
+          <h3 id="modal-title">Wedding Photo</h3>
+          <p id="modal-event" style="color: var(--brand-primary); font-weight: 600;">Wedding Event</p>
+        </div>
+        <ul class="modal-meta-list">
+          <li class="modal-meta-item">
+            <span>Tanggal</span>
+            <span id="modal-time">10:45 AM</span>
+          </li>
+          <li class="modal-meta-item">
+            <span>Perangkat</span>
+            <span id="modal-device">Xiaomi Pad 6</span>
+          </li>
+          <li class="modal-meta-item">
+            <span>Ukuran File</span>
+            <span id="modal-size">1.8 MB</span>
+          </li>
+        </ul>
+        <div style="display: flex; gap: 1rem; width: 100%;">
+          <a href="#" class="btn btn-primary" style="flex-grow: 1; text-align: center;" id="modal-download" download>📥 Unduh</a>
+          <button class="btn btn-secondary" onclick="sharePhoto()">🔗 Copy Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-notif">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Pesan sukses</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
