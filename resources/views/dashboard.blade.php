@@ -319,6 +319,28 @@
           </div>
         </div>
 
+        <div class="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm mb-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Storage Cloud</p>
+              <div class="mt-2 flex items-end gap-2">
+                <span class="text-3xl font-extrabold text-slate-900">{{ $license['storage']['used'] }}</span>
+                <span class="text-sm font-bold text-slate-400 mb-1">/ {{ $license['storage']['quota'] }}</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-2">Sisa kuota {{ $license['storage']['remaining'] }} untuk foto, video, dan album event.</p>
+            </div>
+            <div class="w-full lg:max-w-xl">
+              <div class="flex justify-between text-xs font-bold text-slate-500 mb-2">
+                <span>Terpakai {{ $license['storage']['percentage'] }}%</span>
+                <span>{{ $license['storage']['quota'] }}</span>
+              </div>
+              <div class="h-3 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full rounded-full bg-indigo-600" style="width: {{ $license['storage']['percentage'] }}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>

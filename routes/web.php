@@ -9,6 +9,7 @@ use App\Models\NavigationMenu;
 use App\Models\PricingPlan;
 use App\Models\Article;
 use App\Models\ClientDevice;
+use Illuminate\Support\Facades\File;
 
 Route::get('/', function () {
     $menus = NavigationMenu::where('type', 'landing_page')->orderBy('order')->get();
@@ -54,6 +55,21 @@ Route::get('/dashboard', function () {
         ->orWhereNull('user_id')
         ->latest('last_active_at')
         ->get();
+    $storagePath = storage_path('app/public');
+    $storageBytes = File::isDirectory($storagePath)
+        ? collect(File::allFiles($storagePath))->sum(fn ($file) => $file->getSize())
+        : 0;
+    $storageQuotaBytes = 2 * 1024 * 1024 * 1024;
+    $formatStorage = fn (int|float $bytes) => $bytes >= 1024 * 1024 * 1024
+        ? number_format($bytes / (1024 * 1024 * 1024), 2) . ' GB'
+        : number_format($bytes / (1024 * 1024), 1) . ' MB';
+
+    $storageUsage = [
+        'used' => $formatStorage($storageBytes),
+        'quota' => '2 GB',
+        'remaining' => $formatStorage(max($storageQuotaBytes - $storageBytes, 0)),
+        'percentage' => min(100, round(($storageBytes / $storageQuotaBytes) * 100, 1)),
+    ];
 
     $license = [
         'plan' => 'Online Starter Plan Internal',
@@ -63,6 +79,7 @@ Route::get('/dashboard', function () {
         'active_devices' => $devices->where('is_online', true)->count(),
         'registered_devices' => $devices->count(),
         'renewal_date' => now()->addMonth()->format('d M Y'),
+        'storage' => $storageUsage,
     ];
 
     return view('dashboard', compact('menus', 'plans', 'devices', 'license'));
