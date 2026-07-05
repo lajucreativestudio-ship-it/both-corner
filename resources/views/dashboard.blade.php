@@ -26,6 +26,17 @@
 
   <div class="flex min-h-screen">
     <!-- Sidebar Navigation -->
+    @php
+      $user = auth()->user();
+      $isDeveloper = false;
+      if ($user) {
+          if ($user->email === 'developer@bothcorner.com' || in_array($user->role, ['admin', 'team'], true)) {
+              $isDeveloper = true;
+          } elseif ($user->customRole && in_array('view_summary', $user->customRole->permissions ?? [], true)) {
+              $isDeveloper = true;
+          }
+      }
+    @endphp
     <aside class="w-64 bg-[#1a1d24] text-slate-400 flex flex-col justify-between select-none shrink-0">
       <div>
         <div class="p-6 border-b border-slate-800">
@@ -38,7 +49,7 @@
           @foreach($menus as $index => $menu)
             @php
               $panelName = str_replace('#panel-', '', $menu->url);
-              $isActive = ($index === 0);
+              $isActive = ($index === 0 && !request()->has('panel'));
               $emojis = [
                   'events' => '🏠',
                   'settings' => '🔧',
@@ -50,15 +61,30 @@
               $emoji = $emojis[$panelName] ?? '🔗';
             @endphp
             <li class="rounded-xl overflow-hidden" id="menu-{{ $panelName }}">
-              <a href="#" onclick="switchPanel('{{ $panelName }}')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-200 {{ $isActive ? 'text-white bg-indigo-600/10 border-l-4 border-indigo-500' : 'hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent' }}">
-                <span class="text-base">{{ $emoji }}</span> {{ $menu->title }}
-              </a>
+              @if($panelName === 'events')
+                <a href="{{ route('client.events.index') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-200 {{ $isActive ? 'text-white bg-indigo-600/10 border-l-4 border-indigo-500' : 'hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent' }}">
+                  <span class="text-base">{{ $emoji }}</span> {{ $menu->title }}
+                </a>
+              @else
+                <a href="#" onclick="switchPanel('{{ $panelName }}')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-200 {{ $isActive ? 'text-white bg-indigo-600/10 border-l-4 border-indigo-500' : 'hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent' }}">
+                  <span class="text-base">{{ $emoji }}</span> {{ $menu->title }}
+                </a>
+              @endif
             </li>
           @endforeach
           <li class="rounded-xl overflow-hidden" id="menu-licenses">
             <a href="#" onclick="switchPanel('licenses')" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-200 hover:text-white hover:bg-slate-800/50 border-l-4 border-transparent">
               <span class="text-base">🔐</span> Lisensi & Device
             </a>
+          </li>
+
+          <li class="rounded-xl overflow-hidden" id="menu-logout">
+            <form action="{{ route('logout') }}" method="POST" class="block w-full" id="logout-sidebar-form">
+              @csrf
+              <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-400 transition-all duration-200 hover:text-white hover:bg-red-950/20 border-l-4 border-transparent text-left cursor-pointer">
+                <span class="text-base">🚪</span> Log Out
+              </button>
+            </form>
           </li>
         </ul>
       </div>
@@ -69,8 +95,14 @@
         <div id="profile-dropdown" class="hidden absolute bottom-16 left-4 right-4 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50 py-1 transition-all duration-205">
           <div class="px-4 py-2 border-b border-slate-800 bg-slate-950/40">
             <p class="text-[9px] text-slate-500 font-semibold uppercase tracking-wider">Signed in as</p>
-            <p class="text-xs font-bold text-white truncate">lajucreativestudio@gmail.com</p>
+            <p class="text-xs font-bold text-white truncate">{{ auth()->user()->email ?? '' }}</p>
           </div>
+          @if($isDeveloper)
+            <a href="{{ route('developer.dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-indigo-400 hover:text-indigo-300 hover:bg-slate-800/60 transition-colors">
+              🛠️ Developer Panel
+            </a>
+            <div class="border-t border-slate-800"></div>
+          @endif
           <a href="#" onclick="switchPanel('settings'); toggleProfileDropdown(event)" class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">
             ⚙️ Account Info
           </a>
@@ -85,10 +117,12 @@
 
         <div onclick="toggleProfileDropdown(event)" class="flex items-center justify-between cursor-pointer group p-1.5 rounded-xl hover:bg-slate-800/30 transition-colors">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-violet-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">LS</div>
+            <div class="w-10 h-10 rounded-full bg-violet-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">
+              {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+            </div>
             <div class="flex flex-col min-w-0">
-              <span class="text-xs font-bold text-white group-hover:text-violet-300 transition-colors truncate">Laju Studio</span>
-              <span class="text-[10px] text-slate-500 truncate">Administrator</span>
+              <span class="text-xs font-bold text-white group-hover:text-violet-300 transition-colors truncate">{{ auth()->user()->name ?? 'User' }}</span>
+              <span class="text-[10px] text-slate-500 truncate">{{ ucfirst(auth()->user()->role ?? 'member') }}</span>
             </div>
           </div>
           <span class="text-slate-500 group-hover:text-white text-[10px] select-none">▲</span>
@@ -624,7 +658,13 @@
 
     // Page Load initialization
     document.addEventListener('DOMContentLoaded', () => {
-      renderEvents(mockEvents);
+      const urlParams = new URLSearchParams(window.location.search);
+      const panelParam = urlParams.get('panel');
+      if (panelParam) {
+        switchPanel(panelParam);
+      } else {
+        renderEvents(mockEvents);
+      }
       refreshTicketNotifications();
       setInterval(refreshTicketNotifications, 60000);
     });

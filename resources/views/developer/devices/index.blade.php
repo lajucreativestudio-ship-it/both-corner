@@ -17,45 +17,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
   <div class="flex min-h-screen">
-    <aside class="w-72 bg-[#0f172a] text-slate-400 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none">
-      <div>
-        <div class="h-20 px-6 border-b border-slate-800/70 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">B</div>
-          <div class="leading-tight">
-            <span class="block text-base font-extrabold text-white tracking-tight">Both<span class="text-indigo-400">Dev</span></span>
-            <span class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Admin Console</span>
-          </div>
-        </div>
-
-        <nav class="p-4">
-          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] px-3 mb-3">Developer Tools</p>
-          <ul class="space-y-1.5">
-            <li>
-              <a href="{{ route('developer.dashboard') }}" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200">
-                <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">📊</span>
-                <span>Ringkasan</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ route('developer.devices.index') }}" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-white shadow-sm shadow-indigo-950/20 transition-all duration-200">
-                <span class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center">💻</span>
-                <span>Device Management</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      <div class="p-4 border-t border-slate-800 bg-slate-950/20">
-        <div class="flex items-center gap-3 p-1.5 rounded-xl">
-          <div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md">DV</div>
-          <div class="flex flex-col min-w-0">
-            <span class="text-xs font-bold text-white truncate">{{ auth()->user()->name ?? 'Developer' }}</span>
-            <span class="text-[10px] text-slate-500 truncate">Administrator</span>
-          </div>
-        </div>
-      </div>
-    </aside>
+    @include('developer.sidebar')
 
     <main class="flex-1 flex flex-col min-w-0">
       <header class="h-20 bg-white border-b border-slate-200/60 px-8 flex items-center justify-between shrink-0">

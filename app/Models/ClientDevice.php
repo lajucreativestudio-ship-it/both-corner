@@ -65,4 +65,9 @@ class ClientDevice extends Model
     {
         return $this->revoked_at !== null;
     }
+
+    public function boothSessions()
+    {
+        return $this->hasMany(BoothSession::class, 'client_device_id');
+    }
 }

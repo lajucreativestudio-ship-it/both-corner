@@ -41,4 +41,19 @@ class PhotoboothEvent extends Model
     {
         return $this->hasMany(EventPhoto::class);
     }
+
+    public function eventTemplates()
+    {
+        return $this->hasMany(EventTemplate::class, 'photobooth_event_id');
+    }
+
+    public function eventCaptureModes()
+    {
+        return $this->hasMany(EventCaptureMode::class, 'photobooth_event_id');
+    }
+
+    public function boothSessions()
+    {
+        return $this->hasMany(BoothSession::class, 'photobooth_event_id');
+    }
 }

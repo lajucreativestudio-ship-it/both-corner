@@ -43,6 +43,9 @@ class PhotoUploadController extends Controller
             'photo_type' => ['nullable', 'string', 'max:100'],
             'session_code' => ['nullable', 'string', 'max:255'],
             'metadata_json' => ['nullable', 'string'],
+            'mode_type' => ['nullable', 'string', 'max:100'],
+            'template_id' => ['nullable', 'integer', 'exists:photobooth_templates,id'],
+            'step_number' => ['nullable', 'integer'],
         ]);
 
         $metadata = $this->metadataFromRequest($validated);
@@ -51,6 +54,30 @@ class PhotoUploadController extends Controller
                 'success' => false,
                 'message' => 'Invalid metadata_json',
             ], 422);
+        }
+
+        // 1. Process booth session if session_code is provided
+        $boothSession = null;
+        $sessionCode = $validated['session_code'] ?? null;
+        if ($sessionCode) {
+            $boothSession = \App\Models\BoothSession::firstOrCreate(
+                [
+                    'session_code' => $sessionCode,
+                    'photobooth_event_id' => $event->id,
+                ],
+                [
+                    'client_device_id' => $device->id,
+                    'photobooth_template_id' => $validated['template_id'] ?? null,
+                    'public_token' => (string) \Illuminate\Support\Str::uuid(),
+                    'mode_type' => $validated['mode_type'] ?? 'photo',
+                    'status' => 'completed',
+                    'started_at' => now(),
+                    'completed_at' => now(),
+                    'metadata_json' => json_decode($validated['metadata_json'] ?? '{}', true) ?: [],
+                ]
+            );
+
+            $boothSession->update(['completed_at' => now()]);
         }
 
         $file = $request->file('photo_file');
@@ -62,12 +89,16 @@ class PhotoUploadController extends Controller
         $photo = EventPhoto::create([
             'photobooth_event_id' => $event->id,
             'client_device_id' => $device->id,
+            'booth_session_id' => $boothSession ? $boothSession->id : null,
             'user_id' => $event->user_id,
             'file_path' => $filePath,
+            'photo_type' => $validated['photo_type'] ?? 'final',
+            'step_number' => $validated['step_number'] ?? null,
             'original_filename' => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
             'file_size' => $file->getSize(),
             'metadata_json' => $metadata,
+            'public_visibility' => 'visible',
             'uploaded_at' => now(),
         ]);
 
@@ -87,6 +118,9 @@ class PhotoUploadController extends Controller
                 'file_url' => $this->publicFileUrl($request, $photo->file_path),
                 'uploaded_at' => optional($photo->uploaded_at)->format('Y-m-d H:i:s'),
             ],
+            'session_code' => $sessionCode,
+            'session_public_url' => $boothSession ? url('/s/' . $boothSession->public_token) : null,
+            'event_public_url' => url('/e/' . $event->slug),
         ]);
     }
 

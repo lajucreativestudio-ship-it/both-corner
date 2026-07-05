@@ -11,6 +11,7 @@ class EventSetting extends Model
 
     protected $fillable = [
         'photobooth_event_id',
+        'template_id',
         'layout_type',
         'countdown_seconds',
         'capture_count',
@@ -35,5 +36,10 @@ class EventSetting extends Model
     public function event()
     {
         return $this->belongsTo(PhotoboothEvent::class, 'photobooth_event_id');
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(PhotoboothTemplate::class, 'template_id');
     }
 }

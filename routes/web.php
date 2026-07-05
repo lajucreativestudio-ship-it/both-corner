@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\Developer\DeviceManagementController;
+use App\Http\Controllers\Developer\EventManagementController;
+use App\Http\Controllers\Developer\TemplateManagementController;
+use App\Http\Controllers\Developer\LicenseManagementController;
+use App\Http\Controllers\Client\GalleryController;
+use App\Http\Controllers\Client\EventManagementController as ClientEventManagementController;
+use App\Http\Controllers\PublicGalleryController;
 use App\Models\NavigationMenu;
 use App\Models\PricingPlan;
 use App\Models\Article;
@@ -19,6 +25,10 @@ Route::get('/', function () {
     $landingPage = \App\Models\StaticPage::where('slug', 'landing')->first();
     return view('landing', compact('menus', 'plans', 'latestArticles', 'landingPage'));
 })->name('landing');
+
+// Public Gallery & Session Sharing Routes
+Route::get('/e/{event}', [PublicGalleryController::class, 'eventGallery'])->name('public.event-gallery');
+Route::get('/s/{public_token}', [PublicGalleryController::class, 'sessionResult'])->name('public.session-result');
 
 Route::get('/login', function () {
     if (Auth::check()) {
@@ -49,7 +59,10 @@ Route::post('/login', function (Request $request) {
     ])->onlyInput('email');
 });
 
-Route::get('/dashboard', function () {
+Route::get('/dashboard', function (Request $request) {
+    if (!$request->has('panel')) {
+        return redirect()->route('client.events.index');
+    }
     $menus = NavigationMenu::where('type', 'user_dashboard')->orderBy('order')->get();
     $plans = PricingPlan::all();
     $devices = ClientDevice::where('user_id', Auth::id())
@@ -104,6 +117,27 @@ Route::middleware(['auth'])->prefix('developer')->group(function () {
     Route::post('/devices/pairing-code', [DeviceManagementController::class, 'storePairingCode'])->name('developer.devices.pairing-code.store');
     Route::post('/devices/{device}/revoke', [DeviceManagementController::class, 'revoke'])->name('developer.devices.revoke');
     Route::post('/devices/{device}/reactivate', [DeviceManagementController::class, 'reactivate'])->name('developer.devices.reactivate');
+
+    // Event Monitoring
+    Route::get('/events', [EventManagementController::class, 'index'])->name('developer.events.index');
+    Route::get('/events/{event}/manage', [EventManagementController::class, 'manage'])->name('developer.events.manage');
+    Route::post('/events/{event}/assign-device', [EventManagementController::class, 'assignDevice'])->name('developer.events.assign-device');
+    Route::post('/events/{event}/unassign-device', [EventManagementController::class, 'unassignDevice'])->name('developer.events.unassign-device');
+
+    // Template Management
+    Route::get('/templates', [TemplateManagementController::class, 'index'])->name('developer.templates.index');
+    Route::get('/templates/create', [TemplateManagementController::class, 'create'])->name('developer.templates.create');
+    Route::post('/templates', [TemplateManagementController::class, 'store'])->name('developer.templates.store');
+    Route::get('/templates/{template}/edit', [TemplateManagementController::class, 'edit'])->name('developer.templates.edit');
+    Route::put('/templates/{template}', [TemplateManagementController::class, 'update'])->name('developer.templates.update');
+
+    // License & Subscription Control
+    Route::get('/licenses', [LicenseManagementController::class, 'index'])->name('developer.licenses.index');
+    Route::get('/licenses/plans', [LicenseManagementController::class, 'plans'])->name('developer.licenses.plans');
+    Route::get('/licenses/users', [LicenseManagementController::class, 'users'])->name('developer.licenses.users');
+    Route::post('/licenses/users/{user}/assign-plan', [LicenseManagementController::class, 'assignPlan'])->name('developer.licenses.users.assign-plan');
+    Route::get('/monetization', [LicenseManagementController::class, 'monetization'])->name('developer.monetization.index');
+    Route::post('/monetization', [LicenseManagementController::class, 'saveMonetization'])->name('developer.monetization.store');
     
     // Articles CRUD
     Route::get('/articles/create', [DeveloperController::class, 'createArticle'])->name('developer.articles.create');
@@ -157,4 +191,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/client/tickets', [DeveloperController::class, 'clientTickets'])->name('client.tickets');
     Route::post('/client/tickets', [DeveloperController::class, 'storeClientTicket'])->name('client.tickets.store');
     Route::post('/client/tickets/{id}/messages', [DeveloperController::class, 'storeClientMessage'])->name('client.messages.store');
+
+    // Client photobooth events & gallery routes
+    Route::get('/dashboard/events', [GalleryController::class, 'index'])->name('client.events.index');
+    Route::get('/dashboard/events/create', [ClientEventManagementController::class, 'create'])->name('client.events.create');
+    Route::post('/dashboard/events', [ClientEventManagementController::class, 'store'])->name('client.events.store');
+    Route::get('/dashboard/events/{event}/edit', [ClientEventManagementController::class, 'edit'])->name('client.events.edit');
+    Route::put('/dashboard/events/{event}', [ClientEventManagementController::class, 'update'])->name('client.events.update');
+    Route::get('/dashboard/events/{event}/manage', [GalleryController::class, 'manage'])->name('client.events.manage');
+    Route::put('/dashboard/events/{event}/cloud-settings', [GalleryController::class, 'updateCloudSettings'])->name('client.events.cloud-settings.update');
+    Route::get('/dashboard/events/{event}', [GalleryController::class, 'show'])->name('client.events.show');
+    Route::get('/dashboard/events/{event}/gallery', [GalleryController::class, 'gallery'])->name('client.events.gallery');
 });

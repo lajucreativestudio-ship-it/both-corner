@@ -12,15 +12,24 @@ class EventPhoto extends Model
     protected $fillable = [
         'photobooth_event_id',
         'client_device_id',
+        'booth_session_id',
         'user_id',
         'file_path',
+        'photo_type',
+        'step_number',
         'thumbnail_path',
         'original_filename',
         'mime_type',
         'file_size',
         'metadata_json',
+        'public_visibility',
         'uploaded_at',
     ];
+
+    public function boothSession()
+    {
+        return $this->belongsTo(BoothSession::class, 'booth_session_id');
+    }
 
     protected function casts(): array
     {

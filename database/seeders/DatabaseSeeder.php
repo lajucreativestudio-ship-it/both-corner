@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Initialize default subscription plans
+        app(\App\Services\LicenseService::class)->initializeDefaultPlans();
+
         // Seed default roles
         $adminRole = \App\Models\Role::create([
             'name' => 'Admin Utama',
@@ -319,6 +322,105 @@ class DatabaseSeeder extends Seeder
                 'sender_id' => User::where('role', 'admin')->first()->id,
                 'message' => 'Halo, betul. Sistem kami akan menghitung sisa hari pada paket aktif Anda saat ini dan memotong harga upgrade secara otomatis pada tagihan baru Anda.',
             ]);
+        }
+
+        // 11. Photobooth Global Templates Presets
+        $presets = [
+            [
+                'name' => '4x6 Portrait Single',
+                'template_type' => 'photo_4x6_portrait',
+                'orientation' => 'portrait',
+                'canvas_width' => 1200,
+                'canvas_height' => 1800,
+                'capture_count' => 1,
+                'is_global' => true,
+                'status' => 'active',
+                'timing_json' => [
+                    'initial_countdown' => 5,
+                    'between_capture_delay' => 2,
+                    'preview_duration' => 3,
+                    'retake_timeout' => 10,
+                    'final_preview_duration' => 8,
+                    'idle_timeout' => 30
+                ],
+                'photo_slots_json' => [
+                    ['slot_number' => 1, 'x' => 50, 'y' => 50, 'width' => 1100, 'height' => 1466]
+                ]
+            ],
+            [
+                'name' => '4x6 Portrait 3 Photos',
+                'template_type' => 'photo_4x6_portrait',
+                'orientation' => 'portrait',
+                'canvas_width' => 1200,
+                'canvas_height' => 1800,
+                'capture_count' => 3,
+                'is_global' => true,
+                'status' => 'active',
+                'timing_json' => [
+                    'initial_countdown' => 5,
+                    'between_capture_delay' => 2,
+                    'preview_duration' => 3,
+                    'retake_timeout' => 10,
+                    'final_preview_duration' => 8,
+                    'idle_timeout' => 30
+                ],
+                'photo_slots_json' => [
+                    ['slot_number' => 1, 'x' => 100, 'y' => 80, 'width' => 1000, 'height' => 450],
+                    ['slot_number' => 2, 'x' => 100, 'y' => 580, 'width' => 1000, 'height' => 450],
+                    ['slot_number' => 3, 'x' => 100, 'y' => 1080, 'width' => 1000, 'height' => 450]
+                ]
+            ],
+            [
+                'name' => '2x6 Strip 3 Photos',
+                'template_type' => 'strip_2x6',
+                'orientation' => 'portrait',
+                'canvas_width' => 600,
+                'canvas_height' => 1800,
+                'capture_count' => 3,
+                'is_global' => true,
+                'status' => 'active',
+                'timing_json' => [
+                    'initial_countdown' => 5,
+                    'between_capture_delay' => 2,
+                    'preview_duration' => 3,
+                    'retake_timeout' => 10,
+                    'final_preview_duration' => 8,
+                    'idle_timeout' => 30
+                ],
+                'photo_slots_json' => [
+                    ['slot_number' => 1, 'x' => 50, 'y' => 80, 'width' => 500, 'height' => 375],
+                    ['slot_number' => 2, 'x' => 50, 'y' => 500, 'width' => 500, 'height' => 375],
+                    ['slot_number' => 3, 'x' => 50, 'y' => 920, 'width' => 500, 'height' => 375]
+                ]
+            ],
+            [
+                'name' => '2x6 Strip 4 Photos',
+                'template_type' => 'strip_2x6',
+                'orientation' => 'portrait',
+                'canvas_width' => 600,
+                'canvas_height' => 1800,
+                'capture_count' => 4,
+                'is_global' => true,
+                'status' => 'active',
+                'timing_json' => [
+                    'initial_countdown' => 5,
+                    'between_capture_delay' => 2,
+                    'preview_duration' => 3,
+                    'retake_timeout' => 10,
+                    'final_preview_duration' => 8,
+                    'idle_timeout' => 30
+                ],
+                'photo_slots_json' => [
+                    ['slot_number' => 1, 'x' => 50, 'y' => 60, 'width' => 500, 'height' => 333],
+                    ['slot_number' => 2, 'x' => 50, 'y' => 430, 'width' => 500, 'height' => 333],
+                    ['slot_number' => 3, 'x' => 50, 'y' => 800, 'width' => 500, 'height' => 333],
+                    ['slot_number' => 4, 'x' => 50, 'y' => 1170, 'width' => 500, 'height' => 333]
+                ]
+            ]
+        ];
+
+        foreach ($presets as $preset) {
+            \App\Models\PhotoboothTemplate::create($preset);
         }
     }
 }

@@ -107,13 +107,121 @@ class DeviceController extends Controller
             ]);
         }
 
-        $event = PhotoboothEvent::with('setting')->find($device->current_event_id);
+        $event = PhotoboothEvent::with(['setting.template', 'eventCaptureModes', 'eventTemplates.template.steps'])
+            ->find($device->current_event_id);
 
         if (!$event) {
             return response()->json([
                 'success' => false,
                 'message' => 'No active event assigned',
             ]);
+        }
+
+        // 1. Format Capture Modes (only active ones; fallback to photo if empty)
+        $captureModes = [];
+        $activeModes = $event->eventCaptureModes->where('is_enabled', true);
+        if ($activeModes->isEmpty()) {
+            $captureModes[] = [
+                'mode_type' => 'photo',
+                'is_enabled' => true,
+                'sort_order' => 0,
+                'config' => (object)[],
+            ];
+        } else {
+            foreach ($activeModes as $cm) {
+                $captureModes[] = [
+                    'mode_type' => $cm->mode_type,
+                    'is_enabled' => true,
+                    'sort_order' => $cm->sort_order,
+                    'config' => $cm->config_json ?? (object)[],
+                ];
+            }
+        }
+
+        // 2. Format Templates
+        $templatesPayload = [];
+        $defaultTemplatePayload = null;
+        $defaultTemplateCandidate = null;
+        $eventTiming = optional($event->setting)->config_json['timing'] ?? null;
+
+        foreach ($event->eventTemplates as $et) {
+            $tmpl = $et->template;
+            if (!$tmpl || $tmpl->status !== 'active') {
+                continue;
+            }
+
+            // Steps formatting
+            $steps = [];
+            foreach ($tmpl->steps->sortBy('step_number') as $step) {
+                $steps[] = [
+                    'step_number' => (int)$step->step_number,
+                    'slot_number' => (int)$step->slot_number,
+                    'countdown_seconds' => (int)($step->countdown_seconds ?? 5),
+                    'preview_seconds' => (int)($step->preview_seconds ?? 3),
+                    'overlay_url' => $this->publicStorageUrl($step->overlay_path),
+                    'instruction_text' => $step->instruction_text ?? '',
+                    'config' => $step->config_json ?? (object)[],
+                ];
+            }
+
+            $timing = $eventTiming ?? $tmpl->timing_json ?? [
+                'initial_countdown' => 5,
+                'between_capture_delay' => 2,
+                'preview_duration' => 3,
+                'retake_timeout' => 10,
+                'final_preview_duration' => 8,
+                'idle_timeout' => 30,
+            ];
+
+            $templatesPayload[] = [
+                'id' => $tmpl->id,
+                'name' => $tmpl->name,
+                'template_type' => $tmpl->template_type,
+                'orientation' => $tmpl->orientation,
+                'canvas_width' => (int)$tmpl->canvas_width,
+                'canvas_height' => (int)$tmpl->canvas_height,
+                'capture_count' => (int)$tmpl->capture_count,
+                'mode_type' => $et->mode_type ?? 'photo',
+                'is_default' => (bool)$et->is_default,
+                'sort_order' => (int)$et->sort_order,
+                'overlay_url' => $this->publicStorageUrl($tmpl->overlay_path),
+                'background_url' => $this->publicStorageUrl($tmpl->background_path),
+                'photo_slots' => $tmpl->photo_slots_json ?? [],
+                'timing' => $timing,
+                'steps' => $steps,
+            ];
+
+            if ($et->is_default) {
+                $defaultTemplateCandidate = $tmpl;
+            }
+        }
+
+        // Default template fallback chain:
+        // 1. Explicit toggled in event_templates (handled above)
+        // 2. Fallback to event_settings.template_id
+        if (!$defaultTemplateCandidate && optional($event->setting)->template_id) {
+            $fallbackTmpl = \App\Models\PhotoboothTemplate::find($event->setting->template_id);
+            if ($fallbackTmpl && $fallbackTmpl->status === 'active') {
+                $defaultTemplateCandidate = $fallbackTmpl;
+            }
+        }
+
+        // 3. Fallback to first assigned active template
+        if (!$defaultTemplateCandidate && count($templatesPayload) > 0) {
+            $firstTmplId = $templatesPayload[0]['id'];
+            $defaultTemplateCandidate = \App\Models\PhotoboothTemplate::find($firstTmplId);
+        }
+
+        if ($defaultTemplateCandidate) {
+            $defaultTemplatePayload = [
+                'id' => $defaultTemplateCandidate->id,
+                'name' => $defaultTemplateCandidate->name,
+                'template_type' => $defaultTemplateCandidate->template_type,
+                'orientation' => $defaultTemplateCandidate->orientation,
+                'canvas_width' => (int)$defaultTemplateCandidate->canvas_width,
+                'canvas_height' => (int)$defaultTemplateCandidate->canvas_height,
+                'capture_count' => (int)$defaultTemplateCandidate->capture_count,
+            ];
         }
 
         return response()->json([
@@ -127,6 +235,10 @@ class DeviceController extends Controller
                 'status' => $event->status,
             ],
             'settings' => $this->settingsPayload($event),
+            'capture_modes' => $captureModes,
+            'templates' => $templatesPayload,
+            'default_template' => $defaultTemplatePayload,
+            'license' => app(\App\Services\LicenseService::class)->getPublicGalleryEntitlements($event->user),
         ]);
     }
 

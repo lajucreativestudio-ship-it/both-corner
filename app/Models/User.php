@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'role_id'])]
+#[Fillable(['name', 'email', 'password', 'role', 'role_id', 'current_plan_id', 'subscription_status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -48,5 +48,32 @@ class User extends Authenticatable
     public function eventPhotos()
     {
         return $this->hasMany(EventPhoto::class);
+    }
+
+    public function currentPlan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'current_plan_id');
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(UserSubscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+            })
+            ->latest()
+            ->first();
+    }
+
+    public function plan()
+    {
+        return $this->currentPlan;
     }
 }
