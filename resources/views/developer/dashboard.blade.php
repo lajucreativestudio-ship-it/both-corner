@@ -24,56 +24,56 @@
 <body class="bg-slate-50 text-slate-800 overflow-x-hidden antialiased flex h-screen">
 
   <!-- Sidebar -->
-  <aside class="w-72 bg-[#0f172a] text-slate-400 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none">
+  <aside id="developer-sidebar" class="w-72 bg-[#0f172a] text-slate-400 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none transition-all duration-300 ease-in-out">
     <div class="min-h-0 flex flex-col">
       <!-- Brand Logo -->
-      <div class="h-20 px-6 border-b border-slate-800/70 flex items-center gap-3 shrink-0">
-        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">B</div>
-        <div class="leading-tight">
+      <div id="developer-sidebar-brand" class="h-20 px-6 border-b border-slate-800/70 flex items-center gap-3 shrink-0 transition-all duration-300">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md shrink-0">B</div>
+        <div class="sidebar-label leading-tight">
           <span class="block text-base font-extrabold text-white tracking-tight">Both<span class="text-indigo-400">Dev</span></span>
           <span class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Admin Console</span>
         </div>
       </div>
       
       <!-- Nav Menu list -->
-      <nav class="p-4 overflow-y-auto">
-        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] px-3 mb-3">Developer Tools</p>
+      <nav id="developer-sidebar-nav" class="p-4 overflow-y-auto transition-all duration-300">
+        <p class="sidebar-label text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] px-3 mb-3">Developer Tools</p>
         <ul class="space-y-1.5">
           <li id="menu-summary">
             <a href="#" data-nav-link onclick="switchPanel('summary')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-white shadow-sm shadow-indigo-950/20 transition-all duration-200 cursor-pointer">
               <span class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center">📊</span>
-              <span class="truncate">Ringkasan</span>
+              <span class="sidebar-label truncate">Ringkasan</span>
             </a>
           </li>
           
           <!-- Dropdown Kelola Konten -->
           <li>
             <button type="button" id="parent-dropdown-content" data-nav-parent onclick="toggleDropdown('dropdown-content')" class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent hover:border-slate-700/70 hover:text-white hover:bg-slate-800/50 text-slate-300 transition-all duration-200 cursor-pointer">
-              <span class="flex items-center gap-3 min-w-0">
+              <span class="sidebar-parent-label flex items-center gap-3 min-w-0">
                 <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">📁</span>
-                <span class="truncate">Kelola Konten</span>
+                <span class="sidebar-label truncate">Kelola Konten</span>
               </span>
-              <span id="chevron-dropdown-content" class="transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
+              <span id="chevron-dropdown-content" class="sidebar-chevron transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
             </button>
             <ul id="dropdown-content" data-nav-group class="relative ml-7 mt-1.5 space-y-1 border-l border-slate-700/60 pl-3 block">
               <li id="menu-articles">
                 <a href="#" data-nav-link onclick="switchPanel('articles')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">📰</span> <span class="truncate">Kelola Artikel</span>
+                  <span class="w-5 text-center">📰</span> <span class="sidebar-label truncate">Kelola Artikel</span>
                 </a>
               </li>
               <li id="menu-categories">
                 <a href="#" data-nav-link onclick="switchPanel('categories')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">🏷️</span> <span class="truncate">Kategori Artikel</span>
+                  <span class="w-5 text-center">🏷️</span> <span class="sidebar-label truncate">Kategori Artikel</span>
                 </a>
               </li>
               <li id="menu-pages">
                 <a href="#" data-nav-link onclick="switchPanel('pages')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">📄</span> <span class="truncate">Kelola Halaman Statis</span>
+                  <span class="w-5 text-center">📄</span> <span class="sidebar-label truncate">Kelola Halaman Statis</span>
                 </a>
               </li>
               <li id="menu-menus">
                 <a href="#" data-nav-link onclick="switchPanel('menus')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">🔗</span> <span class="truncate">Kelola Menu Navigasi</span>
+                  <span class="w-5 text-center">🔗</span> <span class="sidebar-label truncate">Kelola Menu Navigasi</span>
                 </a>
               </li>
             </ul>
@@ -82,42 +82,42 @@
           <li id="menu-payments">
             <a href="#" data-nav-link onclick="switchPanel('payments')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
               <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💳</span>
-              <span class="truncate">Gateway Pembayaran</span>
+              <span class="sidebar-label truncate">Gateway Pembayaran</span>
             </a>
           </li>
 
           <li id="menu-revenue">
             <a href="#" data-nav-link onclick="switchPanel('revenue')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
               <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">📈</span>
-              <span class="truncate">Pendapatan</span>
+              <span class="sidebar-label truncate">Pendapatan</span>
             </a>
           </li>
 
           <li id="menu-pricing">
             <a href="#" data-nav-link onclick="switchPanel('pricing')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
               <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💰</span>
-              <span class="truncate">Pengaturan Harga</span>
+              <span class="sidebar-label truncate">Pengaturan Harga</span>
             </a>
           </li>
 
           <!-- Dropdown Kelola Pengguna & Hak Akses -->
           <li>
             <button type="button" id="parent-dropdown-users" data-nav-parent onclick="toggleDropdown('dropdown-users')" class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent hover:border-slate-700/70 hover:text-white hover:bg-slate-800/50 text-slate-300 transition-all duration-200 cursor-pointer">
-              <span class="flex items-center gap-3 min-w-0">
+              <span class="sidebar-parent-label flex items-center gap-3 min-w-0">
                 <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">👥</span>
-                <span class="truncate">Pengguna & Tim</span>
+                <span class="sidebar-label truncate">Pengguna & Tim</span>
               </span>
-              <span id="chevron-dropdown-users" class="transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
+              <span id="chevron-dropdown-users" class="sidebar-chevron transition-transform duration-200 text-[10px] text-slate-500 rotate-180">▲</span>
             </button>
             <ul id="dropdown-users" data-nav-group class="relative ml-7 mt-1.5 space-y-1 border-l border-slate-700/60 pl-3 block">
               <li id="menu-users">
                 <a href="#" data-nav-link onclick="switchPanel('users')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">👤</span> <span class="truncate">Daftar Pengguna / Tim</span>
+                  <span class="w-5 text-center">👤</span> <span class="sidebar-label truncate">Daftar Pengguna / Tim</span>
                 </a>
               </li>
               <li id="menu-roles">
                 <a href="#" data-nav-link onclick="switchPanel('roles')" class="flex items-center gap-2.5 px-3 py-2.5 text-[13px] font-semibold rounded-lg border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all duration-200 cursor-pointer">
-                  <span class="w-5 text-center">🔑</span> <span class="truncate">Peran & Hak Akses</span>
+                  <span class="w-5 text-center">🔑</span> <span class="sidebar-label truncate">Peran & Hak Akses</span>
                 </a>
               </li>
             </ul>
@@ -126,7 +126,7 @@
           <li id="menu-chats">
             <a href="#" data-nav-link onclick="switchPanel('chats')" class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
               <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💬</span>
-              <span class="truncate">Chat CS & Tiket</span>
+              <span class="sidebar-label truncate">Chat CS & Tiket</span>
             </a>
           </li>
         </ul>
@@ -134,8 +134,8 @@
     </div>
     
     <!-- Profile footer with popover logout -->
-    <div class="p-4 border-t border-slate-800 bg-slate-950/20 relative">
-      <div id="profile-dropdown" class="hidden absolute bottom-16 left-4 right-4 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50 py-1 transition-all duration-200">
+    <div id="developer-profile-footer" class="p-4 border-t border-slate-800 bg-slate-950/20 relative transition-all duration-300">
+      <div id="profile-dropdown" class="sidebar-label hidden absolute bottom-16 left-4 right-4 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50 py-1 transition-all duration-200">
         <div class="px-4 py-2 border-b border-slate-800 bg-slate-950/40">
           <p class="text-[9px] text-slate-500 font-semibold uppercase tracking-wider">Signed in as</p>
           <p class="text-xs font-bold text-white truncate">developer@bothcorner.com</p>
@@ -148,15 +148,15 @@
         </form>
       </div>
 
-      <div onclick="toggleProfileDropdown(event)" class="flex items-center justify-between cursor-pointer group p-1.5 rounded-xl hover:bg-slate-800/30 transition-colors">
+      <div id="developer-profile-trigger" onclick="toggleProfileDropdown(event)" class="flex items-center justify-between cursor-pointer group p-1.5 rounded-xl hover:bg-slate-800/30 transition-colors">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">DV</div>
-          <div class="flex flex-col min-w-0">
+          <div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform shrink-0">DV</div>
+          <div class="sidebar-label flex flex-col min-w-0">
             <span class="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors truncate">Developer</span>
             <span class="text-[10px] text-slate-500 truncate">Administrator</span>
           </div>
         </div>
-        <span class="text-slate-500 group-hover:text-white text-[10px] select-none">▲</span>
+        <span class="sidebar-label text-slate-500 group-hover:text-white text-[10px] select-none">▲</span>
       </div>
     </div>
   </aside>
@@ -166,7 +166,12 @@
     
     <!-- Top Header -->
     <header class="h-20 bg-white border-b border-slate-200/60 px-8 flex items-center justify-between shrink-0">
-      <h2 class="text-lg font-bold text-slate-800">Developer Cloud Manager</h2>
+      <div class="flex items-center gap-4">
+        <button type="button" onclick="toggleDeveloperSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 flex items-center justify-center transition-colors cursor-pointer" aria-label="Toggle sidebar">
+          <span class="text-lg leading-none">☰</span>
+        </button>
+        <h2 class="text-lg font-bold text-slate-800">Developer Cloud Manager</h2>
+      </div>
       <a href="{{ route('landing') }}" class="text-xs font-bold text-indigo-600 hover:underline">Lihat Landing Page Beranda →</a>
     </header>
 
@@ -1140,6 +1145,76 @@
 
   <!-- JS tabs logic -->
   <script>
+    let isDeveloperSidebarCollapsed = localStorage.getItem('bothcorner:developer-sidebar-collapsed') === 'true';
+
+    function applyDeveloperSidebarState() {
+      const sidebar = document.getElementById('developer-sidebar');
+      if (!sidebar) return;
+
+      sidebar.classList.toggle('w-72', !isDeveloperSidebarCollapsed);
+      sidebar.classList.toggle('w-20', isDeveloperSidebarCollapsed);
+
+      const brand = document.getElementById('developer-sidebar-brand');
+      if (brand) {
+        brand.classList.toggle('justify-center', isDeveloperSidebarCollapsed);
+        brand.classList.toggle('px-6', !isDeveloperSidebarCollapsed);
+        brand.classList.toggle('px-3', isDeveloperSidebarCollapsed);
+      }
+
+      const nav = document.getElementById('developer-sidebar-nav');
+      if (nav) {
+        nav.classList.toggle('p-4', !isDeveloperSidebarCollapsed);
+        nav.classList.toggle('px-3', isDeveloperSidebarCollapsed);
+        nav.classList.toggle('py-4', isDeveloperSidebarCollapsed);
+      }
+
+      sidebar.querySelectorAll('.sidebar-label').forEach(el => {
+        el.classList.toggle('hidden', isDeveloperSidebarCollapsed);
+      });
+
+      sidebar.querySelectorAll('.sidebar-chevron').forEach(el => {
+        el.classList.toggle('hidden', isDeveloperSidebarCollapsed);
+      });
+
+      sidebar.querySelectorAll('[data-nav-link], [data-nav-parent]').forEach(item => {
+        item.classList.toggle('justify-center', isDeveloperSidebarCollapsed);
+        item.classList.toggle('px-3.5', !isDeveloperSidebarCollapsed);
+        item.classList.toggle('px-2', isDeveloperSidebarCollapsed);
+      });
+
+      sidebar.querySelectorAll('.sidebar-parent-label').forEach(item => {
+        item.classList.toggle('justify-center', isDeveloperSidebarCollapsed);
+      });
+
+      const profileFooter = document.getElementById('developer-profile-footer');
+      if (profileFooter) {
+        profileFooter.classList.toggle('p-4', !isDeveloperSidebarCollapsed);
+        profileFooter.classList.toggle('p-3', isDeveloperSidebarCollapsed);
+      }
+
+      const profileTrigger = document.getElementById('developer-profile-trigger');
+      if (profileTrigger) {
+        profileTrigger.classList.toggle('justify-center', isDeveloperSidebarCollapsed);
+        profileTrigger.classList.toggle('justify-between', !isDeveloperSidebarCollapsed);
+      }
+
+      sidebar.querySelectorAll('[data-nav-group]').forEach(group => {
+        if (isDeveloperSidebarCollapsed) {
+          group.classList.add('hidden');
+          group.classList.remove('block');
+        } else {
+          group.classList.remove('hidden');
+          group.classList.add('block');
+        }
+      });
+    }
+
+    function toggleDeveloperSidebar() {
+      isDeveloperSidebarCollapsed = !isDeveloperSidebarCollapsed;
+      localStorage.setItem('bothcorner:developer-sidebar-collapsed', String(isDeveloperSidebarCollapsed));
+      applyDeveloperSidebarState();
+    }
+
     function switchPanel(panelId) {
       // Hide all panels
       document.querySelectorAll('.db-panel').forEach(p => {
@@ -1173,7 +1248,7 @@
         }
 
         const activeGroup = activeLi.closest('[data-nav-group]');
-        if (activeGroup) {
+        if (activeGroup && !isDeveloperSidebarCollapsed) {
           activeGroup.classList.remove('hidden');
           activeGroup.classList.add('block');
 
@@ -1191,6 +1266,11 @@
     }
 
     function toggleDropdown(id) {
+      if (isDeveloperSidebarCollapsed) {
+        toggleDeveloperSidebar();
+        return;
+      }
+
       const menu = document.getElementById(id);
       const chevron = document.getElementById('chevron-' + id);
       if (menu) {
@@ -1205,6 +1285,8 @@
         }
       }
     }
+
+    document.addEventListener('DOMContentLoaded', applyDeveloperSidebarState);
 
     // Category client-side slug auto generator
     function updateCategorySlug() {
