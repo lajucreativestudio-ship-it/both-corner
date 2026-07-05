@@ -34,4 +34,19 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    public function photoboothEvents()
+    {
+        return $this->hasMany(PhotoboothEvent::class);
+    }
+
+    public function devicePairingCodes()
+    {
+        return $this->hasMany(DevicePairingCode::class);
+    }
+
+    public function eventPhotos()
+    {
+        return $this->hasMany(EventPhoto::class);
+    }
 }
