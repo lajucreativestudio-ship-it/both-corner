@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\Developer\DeviceManagementController;
 use App\Models\NavigationMenu;
 use App\Models\PricingPlan;
 use App\Models\Article;
@@ -99,6 +100,10 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 // Developer Routes (Admin Panel)
 Route::middleware(['auth'])->prefix('developer')->group(function () {
     Route::get('/', [DeveloperController::class, 'index'])->name('developer.dashboard');
+    Route::get('/devices', [DeviceManagementController::class, 'index'])->name('developer.devices.index');
+    Route::post('/devices/pairing-code', [DeviceManagementController::class, 'storePairingCode'])->name('developer.devices.pairing-code.store');
+    Route::post('/devices/{device}/revoke', [DeviceManagementController::class, 'revoke'])->name('developer.devices.revoke');
+    Route::post('/devices/{device}/reactivate', [DeviceManagementController::class, 'reactivate'])->name('developer.devices.reactivate');
     
     // Articles CRUD
     Route::get('/articles/create', [DeveloperController::class, 'createArticle'])->name('developer.articles.create');

@@ -45,6 +45,13 @@
               <span class="sidebar-label truncate">Ringkasan</span>
             </a>
           </li>
+
+          <li>
+            <a href="{{ route('developer.devices.index') }}" data-nav-link class="flex items-center gap-3 px-3.5 py-3 text-sm font-bold rounded-xl border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-700/70 transition-all duration-200 cursor-pointer">
+              <span class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">💻</span>
+              <span class="sidebar-label truncate">Device Management</span>
+            </a>
+          </li>
           
           <!-- Dropdown Kelola Konten -->
           <li>
